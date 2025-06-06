@@ -1,3 +1,6 @@
 [submodule "tinygrad"]
 	path = tinygrad
 	url = https://github.com/tinygrad/tinygrad.git
+[submodule "training"]
+	path = training
+	url = https://github.com/mlcommons/training.git
