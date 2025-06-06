@@ -1,0 +1,1 @@
+`./training/stable_diffusion/scripts/datasets/laion400m-filtered-download-moments.sh --output-dir ./datasets/laion-400m/webdataset-moments-filtered`
