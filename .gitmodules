@@ -1,5 +1,5 @@
 [submodule "tinygrad"]
-	path = tinygrad
+	path = tinygrad-repo
 	url = https://github.com/tinygrad/tinygrad.git
 [submodule "training"]
 	path = training
