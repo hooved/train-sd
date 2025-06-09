@@ -1,6 +1,6 @@
 [submodule "tinygrad"]
 	path = tinygrad-repo
-	url = https://github.com/tinygrad/tinygrad.git
+	url = https://github.com/hooved/tinygrad.git
 [submodule "training"]
 	path = training
-	url = https://github.com/mlcommons/training.git
+	url = https://github.com/hooved/training.git
