@@ -61,3 +61,12 @@ docker run --rm -it --gpus=all --ipc=host \
 # if there's an issue, edit the devcontainer.json and vscode>dev containers: rebuild image
 # check hostname within container matches docker ps -a of correct image
 ```
+
+# Patching mlperf image python env
+```shell
+# pytorch lightning won't import without this
+pip install --no-deps --force-reinstall \
+"httpx>=0.24.1,<0.25.0" \
+"httpcore>=0.17.2,<0.18.0" \ &&
+pip install --no-deps --force-reinstall "h11==0.13.0"
+```
