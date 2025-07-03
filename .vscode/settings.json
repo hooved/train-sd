@@ -1,0 +1,4 @@
+{
+  "python.analysis.extraPaths": ["./tinygrad-repo"],
+  "python.defaultInterpreterPath": "./venv/bin/python"
+}
