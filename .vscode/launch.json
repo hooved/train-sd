@@ -1,0 +1,61 @@
+{
+  // Use IntelliSense to learn about possible attributes.
+  // Hover to view descriptions of existing attributes.
+  // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+  "version": "0.2.0",
+  "configurations": [
+    {
+        "name": "_python with env",
+        "type": "debugpy",
+        "request": "launch",
+        "program": "${file}",
+        //"module": "examples.compile_efficientnet",
+        //"module": "pytest",
+        "console": "integratedTerminal",
+        "justMyCode": false,
+        //"args": [
+            //"--fp16",
+        //],
+        "env": {
+            "PYTHONPATH": "${workspaceFolder}",
+        },
+    },
+    {
+        "name": "train_sd",
+        "type": "debugpy",
+        "request": "launch",
+        //"program": "${file}",
+        "module": "examples.mlperf.model_train",
+        "console": "integratedTerminal",
+        "justMyCode": false,
+        //"args": [
+            //"--fp16",
+        //],
+        "env": {
+            "PYTHONPATH": "${workspaceFolder}/tinygrad-repo",
+            "CPU": "1",
+            "MODEL": "stable_diffusion",
+            "BS": "1",
+            "EVAL_BS": "1",
+            "BASEDIR": "/home/hooved/train-sd/training/stable_diffusion/datasets", 
+            "PARALLEL": "0",
+            "RUNMLPERF": "1",
+        },
+    },
+    {
+        "name": "tiny_sd",
+        "type": "debugpy",
+        "request": "launch",
+        //"program": "${file}",
+        "module": "examples.stable_diffusion",
+        "console": "integratedTerminal",
+        "justMyCode": false,
+        "args": [
+            "--fp16",
+        ],
+        "env": {
+            "PYTHONPATH": "${workspaceFolder}/tinygrad-repo",
+        },
+    },
+  ]
+}
