@@ -69,4 +69,6 @@ pip install --no-deps --force-reinstall \
 "httpx>=0.24.1,<0.25.0" \
 "httpcore>=0.17.2,<0.18.0" \ &&
 pip install --no-deps --force-reinstall "h11==0.13.0"
+# optional: install safetensors for exporting intermediate tensors
+# pip install safetensors
 ```
