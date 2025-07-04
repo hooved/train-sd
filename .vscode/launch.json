@@ -17,7 +17,7 @@
             //"--fp16",
         //],
         "env": {
-            "PYTHONPATH": "${workspaceFolder}",
+            "PYTHONPATH": "${workspaceFolder}/tinygrad-repo",
         },
     },
     {
