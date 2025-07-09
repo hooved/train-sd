@@ -1,0 +1,7 @@
+# use the CPU-only PyTorch wheel index
+--index-url https://download.pytorch.org/whl/cpu
+webdataset #TODO: get rid of this, to get rid of all this torch stuff
+numpy<2 # so that below torch doesn't error when importing numpy
+torch==2.2.0 # for torch.utils.data.DataLoader, which webdataset depends on; same version as mlperf ref
+
+tqdm
