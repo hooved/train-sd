@@ -8,9 +8,9 @@ from collections import namedtuple
 # not shown: generation of safetensors from mlperf reference implementation
 # to get these safetensors, setup the mlperf docker image and config (see README), and export the safetensors where indicated in the commented mlperf code
 
-compare_latent = True
+compare_latent = False
 compare_clip = False
-compare_unet = False
+compare_unet = True
 
 def md(a, b):
   diff = (a - b).abs()
@@ -36,7 +36,7 @@ if compare_latent:
   # (0.0001468658447265625, 0.0001968463678010471, 0.0026092529296875)
 
 ### clip encoding closeness testing
-if compare_unet:
+if compare_clip:
   from extra.models.clip import FrozenOpenClipEmbedder
   data = safe_load("/home/hooved/train-sd/training/stable_diffusion/datasets/tensors/unet_inputs.safetensors")
   for k,v in data.items():
@@ -57,6 +57,7 @@ if compare_unet:
   context = model.cond_stage_model([prompt]).realize()
 
   mean_diff, ratio, max_diff = md(data['c'], context)
+  # (2.1096495856909314e-06, 2.6900317320149505e-06, 2.384185791015625e-05)
 
   """
   md(data['c'], context)
@@ -72,6 +73,9 @@ if compare_unet:
 ### unet forward pass (during training), closeness testing
 if compare_unet:
   from extra.models.unet import UNetModel
+  data = safe_load("/home/hooved/train-sd/training/stable_diffusion/datasets/tensors/unet_training_io.safetensors")
+  for k,v in data.items():
+    data[k] = v.to("NV").realize()
 
   unet_params: dict[str,Any] = {
     "adm_in_ch": None,
@@ -95,15 +99,11 @@ if compare_unet:
   # the actual training weights are zeroed out to start
   # in order to not get output of all zeroes, the unet_weights were set to nonzero values with: v.uniform_(-0.05, 0.05)
   unet_weights = safe_load("/home/hooved/train-sd/training/stable_diffusion/datasets/tensors/unet_training_init_model.safetensors")
-  unet_io = safe_load("/home/hooved/train-sd/training/stable_diffusion/datasets/tensors/unet_training_io.safetensors")
-  for k,v in unet_io.items():
-    unet_io[k] = v.to(Device.DEFAULT).realize()
-
   load_state_dict(model, unet_weights)
 
-  out = model(unet_io['x'], unet_io['timesteps'], unet_io['context']).realize()
+  out = model(data['x'], data['timesteps'], data['context']).realize()
 
-  #diff, ratio = md(unet_io['out'], out)
   mean_diff, ratio, max_diff = md(data['out'], out)
+  # (9.668409006735601e-08, 2.3214517111372956e-06, 4.842877388000488e-07)
 
   end = 1
