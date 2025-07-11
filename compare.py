@@ -11,6 +11,18 @@ from collections import namedtuple
 compare_latent = False
 compare_clip = False
 compare_unet = True
+"""
+for all comparisons, used these settings which are different than default mlperf settings, in order to enable apples-to-apples comparison with tinygrad math
+- torch.backends.cuda.matmul.allow_tf32 = False
+- torch.backends.cudnn.allow_tf32 = False
+- torch.set_float32_matmul_precision("highest")
+- in configs/train_01x01x01.yaml:
+  - change model.params.unet_config.use_fp16 from true to false
+  - comment out this setting (so math is in fp32): lightning.trainer.precision: 16
+
+for clip only:
+- in clip resblocks: self.mlp[1].approximate="tanh", to match tinygrad gelu fastmath
+"""
 
 def md(a, b):
   diff = (a - b).abs()
@@ -37,6 +49,13 @@ if compare_latent:
 
 ### clip encoding closeness testing
 if compare_clip:
+  """
+  to get mean(abs(diff)) < 1e-5, in mlperf ref. implementation you need to do this:
+    - in clip resblocks: self.mlp[1].approximate="tanh", to match tinygrad gelu fastmath
+    - torch.backends.cuda.matmul.allow_tf32 = False
+    - torch.backends.cudnn.allow_tf32 = False
+    - torch.set_float32_matmul_precision("highest")
+  """
   from extra.models.clip import FrozenOpenClipEmbedder
   data = safe_load("/home/hooved/train-sd/training/stable_diffusion/datasets/tensors/unet_inputs.safetensors")
   for k,v in data.items():
@@ -58,17 +77,6 @@ if compare_clip:
 
   mean_diff, ratio, max_diff = md(data['c'], context)
   # (2.1096495856909314e-06, 2.6900317320149505e-06, 2.384185791015625e-05)
-
-  """
-  md(data['c'], context)
-  (2.1096495856909314e-06, 2.6900317320149505e-06, 2.384185791015625e-05)
-
-  to get mean(abs(diff)) < 1e-5, in mlperf ref. implementation you need to do this:
-    - in clip resblocks: self.mlp[1].approximate="tanh", to match tinygrad gelu fastmath
-    - torch.backends.cuda.matmul.allow_tf32 = False
-    - torch.backends.cudnn.allow_tf32 = False
-    - torch.set_float32_matmul_precision("highest")
-  """
 
 ### unet forward pass (during training), closeness testing
 if compare_unet:
