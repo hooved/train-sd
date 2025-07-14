@@ -9,9 +9,10 @@ from examples.stable_diffusion import get_alphas_cumprod
 # not shown: generation of safetensors from mlperf reference implementation
 # to get these safetensors, setup the mlperf docker image and config (see README), and export the safetensors where indicated in the commented mlperf code
 
-compare_latent = True
+compare_latent = False
 compare_clip = False
 compare_unet = False
+compare_loss = True
 """
 for all comparisons, used these settings which are different than default mlperf settings, in order to enable apples-to-apples comparison with tinygrad math
 - torch.backends.cuda.matmul.allow_tf32 = False
@@ -32,6 +33,10 @@ def md(a, b):
   ratio = mean_diff / a.abs().mean().item()
   return mean_diff, ratio, max_diff
 
+alphas_cumprod = get_alphas_cumprod()
+sqrt_alphas_cumprod = alphas_cumprod.sqrt()
+sqrt_one_minus_alphas_cumprod = (1 - alphas_cumprod).sqrt()
+
 ### sampled latent closeness testing
 if compare_latent:
   data = safe_load("/home/hooved/train-sd/training/stable_diffusion/datasets/tensors/unet_inputs.safetensors")
@@ -49,9 +54,6 @@ if compare_latent:
   # (0.0001468658447265625, 0.0001968463678010471, 0.0026092529296875)
 
   ### add noise (for training input)
-  alphas_cumprod = get_alphas_cumprod()
-  sqrt_alphas_cumprod = alphas_cumprod.sqrt()
-  sqrt_one_minus_alphas_cumprod = (1 - alphas_cumprod).sqrt()
   # data['t'].shape == (1,)
   # data['t'].dtype == dtypes.long
   # noise = Tensor.randn_like(latent)
@@ -125,5 +127,15 @@ if compare_unet:
 
   mean_diff, ratio, max_diff = md(data['out'], out)
   # (9.668409006735601e-08, 2.3214517111372956e-06, 4.842877388000488e-07)
+
+if compare_loss:
+  data = safe_load("/home/hooved/train-sd/training/stable_diffusion/datasets/tensors/unet_inputs.safetensors")
+  for k,v in data.items():
+    data[k] = v.to("NV").realize()
+  #out = model(data['x_noisy'], data['t'], data['cond']).realize()
+  v_actual = sqrt_alphas_cumprod[data['t']] * data['noise'] - sqrt_one_minus_alphas_cumprod[data['t']] * data['x']
+  loss = ((data['model_output'] - v_actual) ** 2).mean() / v_actual.shape[0]
+  mean_diff, ratio, max_diff = md(data['loss'], loss)
+  # (2.384185791015625e-07, 1.9723628571727243e-07, 2.384185791015625e-07)
 
   end = 1
