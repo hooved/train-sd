@@ -41,6 +41,7 @@
             "BASEDIR": "/home/hooved/train-sd/training/stable_diffusion/datasets", 
             "PARALLEL": "0",
             "RUNMLPERF": "1",
+            "LIMIT_GPU_RAM": "1",
         },
     },
     {
