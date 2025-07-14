@@ -2,15 +2,16 @@ from tinygrad import Tensor, Device, dtypes
 from tinygrad.nn.state import safe_load, load_state_dict, get_state_dict
 from typing import Any
 from collections import namedtuple
+from examples.stable_diffusion import get_alphas_cumprod
 
 # goal: translate mlperf stable_diffusion-v2 ref. implementation to tinygrad
 
 # not shown: generation of safetensors from mlperf reference implementation
 # to get these safetensors, setup the mlperf docker image and config (see README), and export the safetensors where indicated in the commented mlperf code
 
-compare_latent = False
+compare_latent = True
 compare_clip = False
-compare_unet = True
+compare_unet = False
 """
 for all comparisons, used these settings which are different than default mlperf settings, in order to enable apples-to-apples comparison with tinygrad math
 - torch.backends.cuda.matmul.allow_tf32 = False
@@ -46,6 +47,17 @@ if compare_latent:
   latent = (mean + std * data["latent_randn_sampling"]).cast(dtypes.float16) * SCALE_FACTOR
   mean_diff, ratio, max_diff = md(data['x'], latent)
   # (0.0001468658447265625, 0.0001968463678010471, 0.0026092529296875)
+
+  ### add noise (for training input)
+  alphas_cumprod = get_alphas_cumprod()
+  sqrt_alphas_cumprod = alphas_cumprod.sqrt()
+  sqrt_one_minus_alphas_cumprod = (1 - alphas_cumprod).sqrt()
+  # data['t'].shape == (1,)
+  # data['t'].dtype == dtypes.long
+  # noise = Tensor.randn_like(latent)
+  latent_with_noise = sqrt_alphas_cumprod[data['t']] * latent + sqrt_one_minus_alphas_cumprod[data['t']] * data['noise']
+  mean_diff, ratio, max_diff = md(data['x_noisy'], latent_with_noise)
+  # (2.717769348237198e-05, 3.34946510299305e-05, 0.0005095005035400391)
 
 ### clip encoding closeness testing
 if compare_clip:
