@@ -33,7 +33,8 @@
         //],
         "env": {
             "PYTHONPATH": "${workspaceFolder}/tinygrad-repo",
-            "CPU": "1",
+            //"CPU": "1",
+            "NV": "1",
             "MODEL": "stable_diffusion",
             "BS": "1",
             "EVAL_BS": "1",
