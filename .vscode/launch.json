@@ -38,10 +38,9 @@
             "MODEL": "stable_diffusion",
             "BS": "1",
             "EVAL_BS": "1",
-            "BASEDIR": "/home/hooved/train-sd/training/stable_diffusion/datasets", 
+            "BASEDIR": "/home/hooved/train-sd/training/stable_diffusion", 
             "PARALLEL": "0",
             "RUNMLPERF": "1",
-            "LIMIT_GPU_RAM": "1",
         },
     },
     {
