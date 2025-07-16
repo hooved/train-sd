@@ -11,7 +11,8 @@ BASEDIR = Path("/home/hooved/train-sd/training/stable_diffusion")
 # not shown: generation of safetensors from mlperf reference implementation
 # to get these safetensors, setup the mlperf docker image and config (see README), and export the safetensors where indicated in the commented mlperf code
 
-compare_weights_onestep = True
+compare_weights_three_steps = True
+compare_weights_onestep = False
 compare_grads = False
 compare_end_to_end = False
 compare_latent = False
@@ -41,6 +42,21 @@ def md(a, b):
 alphas_cumprod = get_alphas_cumprod()
 sqrt_alphas_cumprod = alphas_cumprod.sqrt()
 sqrt_one_minus_alphas_cumprod = (1 - alphas_cumprod).sqrt()
+
+if compare_weights_three_steps:
+  DATADIR = BASEDIR / "checkpoints"
+  tiny = safe_load(DATADIR / "tiny_out.2.bias_after_3_steps.safetensors")
+  ref = safe_load(DATADIR / "ref_out.2.bias_after_3_training_steps.safetensors")
+  """
+  tiny["out.2.bias"].tolist()
+  # [-1.248389863706123e-10, -1.2538842186771149e-10, -8.42087788388568e-11, 1.2096189327959195e-10]
+  ref["model.diffusion_model.out.2.bias"].tolist()
+  # [-3.7063471736153986e-10, -3.4958785866123776e-10, -1.9371104720278254e-10, 3.665407977138102e-10]
+  """
+  md(ref["model.diffusion_model.out.2.bias"].to("NV"), tiny["out.2.bias"].to("NV"))
+  #(2.0626908514564946e-10, 0.6443520784378052, 2.4579571711313974e-10)
+
+  pause = 1
 
 if compare_weights_onestep:
   DATADIR = BASEDIR / "checkpoints"
