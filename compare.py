@@ -11,7 +11,8 @@ BASEDIR = Path("/home/hooved/train-sd/training/stable_diffusion")
 # not shown: generation of safetensors from mlperf reference implementation
 # to get these safetensors, setup the mlperf docker image and config (see README), and export the safetensors where indicated in the commented mlperf code
 
-compare_end_to_end = True
+compare_grads = True
+compare_end_to_end = False
 compare_latent = False
 compare_clip = False
 compare_unet = False
@@ -39,6 +40,20 @@ def md(a, b):
 alphas_cumprod = get_alphas_cumprod()
 sqrt_alphas_cumprod = alphas_cumprod.sqrt()
 sqrt_one_minus_alphas_cumprod = (1 - alphas_cumprod).sqrt()
+
+if compare_grads:
+  DATADIR = BASEDIR / "checkpoints"
+
+  #init_weights = safe_load(DATADIR / "training_init_model.safetensors")
+  #ref_grads = safe_load(DATADIR / "grads_after_1_training_steps.safetensors")
+  #tiny_grads_backup = safe_load(DATADIR / "tiny_grads_after_1_steps.backup.safetensors")
+
+  tiny_grads = safe_load(DATADIR / "tiny_grads_after_1_steps.safetensors")
+  ref_grads = safe_load(DATADIR / "out.2.weight_after_1_training_steps.safetensors")
+  md(ref_grads["model.diffusion_model.out.2.bias.grad"].to("NV"), tiny_grads["out.2.bias.grad"].to("NV"))
+  #(3.1656527426093817e-06, 8.865074050845578e-05, 8.277595043182373e-06)
+
+  pause = 1
 
 if compare_end_to_end:
   DATADIR = BASEDIR / "checkpoints"
