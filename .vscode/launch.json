@@ -34,8 +34,9 @@
         "env": {
             "PYTHONPATH": "${workspaceFolder}/tinygrad-repo",
             //"CPU": "1",
-            "NV": "1",
+            //"NV": "1",
             "MODEL": "stable_diffusion",
+            "DEFAULT_FLOAT": "HALF",
             "BS": "1",
             "EVAL_BS": "1",
             "BASEDIR": "/home/hooved/train-sd/training/stable_diffusion", 
