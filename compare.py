@@ -240,3 +240,21 @@ if compare_loss:
   # (2.384185791015625e-07, 1.9723628571727243e-07, 2.384185791015625e-07)
 
   end = 1
+
+"""
+  def md(a, b):
+    diff = (a - b).abs()
+    max_diff = diff.max()
+    mean_diff = diff.mean()
+    ratio = mean_diff / a.abs().mean()
+    return mean_diff.item(), ratio.item(), max_diff.item()
+  data = safe_load(BASEDIR / "checkpoints" / "linear.safetensors")
+  for w in data.values():
+    w.to_("NV").realize()
+  from tinygrad.nn import Linear
+  layer = Linear(*data['self.to_q.weight'].shape, bias=False)
+  layer.weight = data['self.to_q.weight'].cast(dtypes.float16)
+  tiny_q = layer(data['x'].cast(dtypes.float16))
+  print(md(data['q'], tiny_q))
+  pause = 1
+"""
