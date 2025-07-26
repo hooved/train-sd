@@ -16,6 +16,7 @@
       raise e
 ```
 
+```
 exception when running kernel: 
 
 self.p.src:
@@ -38433,3 +38434,4 @@ Traceback (most recent call last):
   File "/home/hooved/tinygrad/tinygrad/runtime/ops_amd.py", line 643, in on_device_hang
     raise RuntimeError("\n".join(report))
 RuntimeError
+```
