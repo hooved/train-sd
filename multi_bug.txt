@@ -1,0 +1,49 @@
+Traceback (most recent call last):
+  File "/home/hooved/tinygrad/bug.py", line 6, in <module>
+    x.realize()
+  File "/home/hooved/tinygrad/tinygrad/tensor.py", line 4423, in _wrapper
+    ret = fn(*args, **kwargs)
+          ^^^^^^^^^^^^^^^^^^^
+  File "/home/hooved/tinygrad/tinygrad/tensor.py", line 269, in realize
+    run_schedule(*self.schedule_with_vars(*lst), do_update_stats=do_update_stats)
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/hooved/tinygrad/tinygrad/tensor.py", line 4398, in _wrapper
+    if _METADATA.get() is not None: return fn(*args, **kwargs)
+                                           ^^^^^^^^^^^^^^^^^^^
+  File "/home/hooved/tinygrad/tinygrad/tensor.py", line 248, in schedule_with_vars
+    self.kernelize(*lst)
+  File "/home/hooved/tinygrad/tinygrad/tensor.py", line 4398, in _wrapper
+    if _METADATA.get() is not None: return fn(*args, **kwargs)
+                                           ^^^^^^^^^^^^^^^^^^^
+  File "/home/hooved/tinygrad/tinygrad/tensor.py", line 237, in kernelize
+    becomes_map = get_kernelize_map(big_sink)
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/hooved/tinygrad/tinygrad/uop/ops.py", line 791, in __wrapper
+    ret = func(*args, **kwargs)
+          ^^^^^^^^^^^^^^^^^^^^^
+  File "/home/hooved/tinygrad/tinygrad/schedule/kernelize.py", line 433, in get_kernelize_map
+    tensor_map = graph_rewrite_map(sink, multi_pm+do_fuse+merge_views+sym+replace_contiguous, ctx={}, name="merge_views")
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/hooved/tinygrad/tinygrad/uop/ops.py", line 819, in _track_func
+    ret = func(*args, **kwargs)
+          ^^^^^^^^^^^^^^^^^^^^^
+  File "/home/hooved/tinygrad/tinygrad/uop/ops.py", line 921, in graph_rewrite_map
+    new_map[k] = v = rewrite_ctx.unified_rewrite(k)
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/hooved/tinygrad/tinygrad/uop/ops.py", line 896, in unified_rewrite
+    if self.pm is None or (new_src_n:=self.pm.rewrite(new_n, self.ctx)) is None:
+                                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/hooved/tinygrad/tinygrad/uop/ops.py", line 731, in rewrite
+    if (ret:=match(uop, ctx)) is not None and ret is not uop: return ret
+             ^^^^^^^^^^^^^^^
+  File "<string>", line 3, in compiled_match
+  File "/home/hooved/tinygrad/tinygrad/schedule/multi.py", line 165, in reshape_multi
+    if (new_axis:=root.axis) is None: return multi.src[0].reshape(arg).multi(new_axis)
+                  ^^^^^^^^^
+  File "/usr/lib/python3.12/functools.py", line 995, in __get__
+    val = self.func(instance)
+          ^^^^^^^^^^^^^^^^^^^
+  File "/home/hooved/tinygrad/tinygrad/uop/ops.py", line 303, in axis
+    return len(arg_acc) - arg_acc[::-1].index(prod(self.src[0].shape[:src_axis])) - 1
+                          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+ValueError: 77 is not in list
