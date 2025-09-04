@@ -1,0 +1,138 @@
+UOp(Ops.SINK, dtypes.void, arg=None, src=(
+  UOp(Ops.STORE, dtypes.void, arg=None, src=(
+    UOp(Ops.VIEW, dtypes.float.ptr(14745600), arg=ShapeTracker(views=(View(shape=(1280, 1280, 3, 3, 1, 1, 1, 1), strides=(11520, 9, 3, 1, 0, 0, 0, 0), offset=0, mask=None, contiguous=True),)), src=(
+      UOp(Ops.DEFINE_GLOBAL, dtypes.float.ptr(14745600), arg=0, src=()),)),
+    UOp(Ops.REDUCE_AXIS, dtypes.float, arg=(Ops.ADD, (4, 6, 7)), src=(
+      UOp(Ops.MUL, dtypes.float, arg=None, src=(
+        UOp(Ops.LOAD, dtypes.float, arg=None, src=(
+          UOp(Ops.VIEW, dtypes.float.ptr(5242880), arg=ShapeTracker(views=(View(shape=(1, 16, 1, 1280, 4, 18, 4, 18), strides=(0, 327680, 0, 256, 0, 16, 0, 1), offset=-17, mask=((0, 1), (0, 16), (0, 1), (0, 1280), (0, 4), (1, 17), (0, 4), (1, 17)), contiguous=False), View(shape=(1280, 1280, 3, 3, 16, 1, 16, 16), strides=(0, 5184, 1368, 19, 6635520, 0, 72, 1), offset=0, mask=None, contiguous=False))), src=(
+            UOp(Ops.DEFINE_GLOBAL, dtypes.float.ptr(5242880), arg=1, src=()),)),)),
+        UOp(Ops.LOAD, dtypes.float, arg=None, src=(
+          UOp(Ops.VIEW, dtypes.float.ptr(5242880), arg=ShapeTracker(views=(View(shape=(1280, 1280, 3, 3, 16, 1, 16, 16), strides=(256, 0, 0, 0, 327680, 0, 16, 1), offset=0, mask=None, contiguous=False),)), src=(
+            UOp(Ops.DEFINE_GLOBAL, dtypes.float.ptr(5242880), arg=2, src=()),)),)),)),)),)),))
+[Opt(op=OptOps.LOCAL, axis=0, arg=32), Opt(op=OptOps.UPCAST, axis=1, arg=5), Opt(op=OptOps.UPCAST, axis=1, arg=2)]
+
+exception when running kernel: MMU fault: 0x746A001A1000 | NotPresent=0 ReadOnly=0 NoExecute=0 imprecise=0
+
+self.p.src:
+#define INFINITY (__builtin_inff())
+#define NAN (__builtin_nanf(""))
+typedef long unsigned int size_t;
+#define half _Float16
+extern "C" __attribute__((device, const)) size_t __ockl_get_local_id(unsigned int);
+extern "C" __attribute__((device, const)) size_t __ockl_get_group_id(unsigned int);
+extern "C" __attribute__((device, const)) size_t __ockl_get_local_size(unsigned int);
+extern "C" __attribute__((device, const)) float __ocml_fmax_f32(float, float);
+extern "C" __attribute__((device, pure)) float __ocml_exp2_f32(float);
+extern "C" __attribute__((device, pure)) float __ocml_log2_f32(float);
+extern "C" __attribute__((device, const)) float __ocml_sqrt_f32(float);
+extern "C" __attribute__((device)) float __ocml_sin_f32(float);
+extern "C" __attribute__((device, const)) double __ocml_fmax_f64(double, double);
+extern "C" __attribute__((device, pure)) double __ocml_exp2_f64(double);
+extern "C" __attribute__((device, pure)) double __ocml_log2_f64(double);
+extern "C" __attribute__((device, const)) double __ocml_sqrt_f64(double);
+extern "C" __attribute__((device)) double __ocml_sin_f64(double);
+extern "C" __attribute__((device, const)) half __ocml_fmax_f16(half, half);
+extern "C" __attribute__((device, pure)) half __ocml_exp2_f16(half);
+extern "C" __attribute__((device, pure)) half __ocml_log2_f16(half);
+extern "C" __attribute__((device, const)) half __ocml_sqrt_f16(half);
+extern "C" __attribute__((device)) half __ocml_sin_f16(half);
+extern "C" __attribute__((global)) void __attribute__((amdgpu_flat_work_group_size(1, 32))) test(float* data0, float* data1, float* data2) {
+  float acc0[10];
+  int gidx0 = __ockl_get_group_id(0); /* 9 */
+  int gidx1 = __ockl_get_group_id(1); /* 128 */
+  int gidx2 = __ockl_get_group_id(2); /* 40 */
+  int lidx0 = __ockl_get_local_id(0); /* 32 */
+  int alu0 = ((gidx0*11)>>5);
+  int alu1 = (gidx0-(3*alu0));
+  *(acc0+0) = 0.0f;
+  *(acc0+1) = 0.0f;
+  *(acc0+2) = 0.0f;
+  *(acc0+3) = 0.0f;
+  *(acc0+4) = 0.0f;
+  *(acc0+5) = 0.0f;
+  *(acc0+6) = 0.0f;
+  *(acc0+7) = 0.0f;
+  *(acc0+8) = 0.0f;
+  *(acc0+9) = 0.0f;
+  for (int ridx1007 = 0; ridx1007 < 16; ridx1007++) {
+    int alu12 = (ridx1007*327680);
+    for (int ridx1008 = 0; ridx1008 < 16; ridx1008++) {
+      int alu13 = (ridx1008<<4);
+      int alu14 = (alu0+ridx1008);
+      for (int ridx1009 = 0; ridx1009 < 16; ridx1009++) {
+        int alu15 = (alu1+ridx1009);
+        bool alu16 = (((alu14<1)!=1)&(alu14<17)&((alu15<1)!=1)&(alu15<17));
+        float val0 = (*(data2+((gidx2<<13)+(lidx0<<8)+alu12+alu13+ridx1009)));
+        int alu17 = ((gidx1*2560)+alu12+(alu0<<4)+alu13+alu15);
+        float val1 = (alu16?*(data1+(alu17+-17)):0.0f);
+        float val2 = (alu16?*(data1+(alu17+239)):0.0f);
+        float val3 = (alu16?*(data1+(alu17+495)):0.0f);
+        float val4 = (alu16?*(data1+(alu17+751)):0.0f);
+        float val5 = (alu16?*(data1+(alu17+1007)):0.0f);
+        float val6 = (alu16?*(data1+(alu17+1263)):0.0f);
+        float val7 = (alu16?*(data1+(alu17+1519)):0.0f);
+        float val8 = (alu16?*(data1+(alu17+1775)):0.0f);
+        float val9 = (alu16?*(data1+(alu17+2031)):0.0f);
+        float val10 = (alu16?*(data1+(alu17+2287)):0.0f);
+        *(acc0+0) = ((*(acc0+0))+(val1*val0));
+        *(acc0+2) = ((*(acc0+2))+(val2*val0));
+        *(acc0+4) = ((*(acc0+4))+(val3*val0));
+        *(acc0+6) = ((*(acc0+6))+(val4*val0));
+        *(acc0+8) = ((*(acc0+8))+(val5*val0));
+        *(acc0+1) = ((*(acc0+1))+(val6*val0));
+        *(acc0+3) = ((*(acc0+3))+(val7*val0));
+        *(acc0+5) = ((*(acc0+5))+(val8*val0));
+        *(acc0+7) = ((*(acc0+7))+(val9*val0));
+        *(acc0+9) = ((*(acc0+9))+(val10*val0));
+      }
+    }
+  }
+  int alu31 = ((gidx1*90)+(gidx2*368640)+(alu0*3)+alu1+(lidx0*11520));
+  *(data0+alu31) = (*(acc0+0));
+  *(data0+(alu31+9)) = (*(acc0+2));
+  *(data0+(alu31+18)) = (*(acc0+4));
+  *(data0+(alu31+27)) = (*(acc0+6));
+  *(data0+(alu31+36)) = (*(acc0+8));
+  *(data0+(alu31+45)) = (*(acc0+1));
+  *(data0+(alu31+54)) = (*(acc0+3));
+  *(data0+(alu31+63)) = (*(acc0+5));
+  *(data0+(alu31+72)) = (*(acc0+7));
+  *(data0+(alu31+81)) = (*(acc0+9));
+}
+
+rawbufs:
+[<buf real:True device:AMD size:14745600 dtype:dtypes.float>, <buf real:True device:AMD size:5242880 dtype:dtypes.float>, <buf real:True device:AMD size:5242880 dtype:dtypes.float>]
+
+lra:
+{'global_size': (9, 128, 40), 'local_size': (32, 1, 1)}
+
+self.p.vars:
+[]
+Exception ignored in: <finalize object at 0x746a163cb840; dead>
+Traceback (most recent call last):
+  File "/usr/lib/python3.12/weakref.py", line 590, in __call__
+    return info.func(*info.args, **(info.kwargs or {}))
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/hooved/tinygrad/tinygrad/runtime/support/hcq.py", line 311, in _fini
+    def _fini(dev, buf, spec): dev.allocator.free(buf, buf.size, spec)
+                               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/hooved/tinygrad/tinygrad/device.py", line 262, in free
+    else: super().free(opaque, size, options)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/hooved/tinygrad/tinygrad/device.py", line 231, in free
+    self._free(opaque, options if options is not None else self.default_buffer_spec)
+  File "/home/hooved/tinygrad/tinygrad/helpers.py", line 86, in wrapper
+    try: return func(*args, **kwargs)
+                ^^^^^^^^^^^^^^^^^^^^^
+  File "/home/hooved/tinygrad/tinygrad/runtime/ops_amd.py", line 478, in _free
+    self.dev.synchronize()
+  File "/home/hooved/tinygrad/tinygrad/runtime/support/hcq.py", line 389, in synchronize
+    if hasattr(self, 'on_device_hang'): self.on_device_hang()
+                                        ^^^^^^^^^^^^^^^^^^^^^
+  File "/home/hooved/tinygrad/tinygrad/runtime/ops_amd.py", line 844, in on_device_hang
+    def on_device_hang(self): self.iface.on_device_hang()
+                              ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/hooved/tinygrad/tinygrad/runtime/ops_amd.py", line 642, in on_device_hang
+    raise RuntimeError("\n".join(report))
+RuntimeError: MMU fault: 0x746A001A1000 | NotPresent=0 ReadOnly=0 NoExecute=0 imprecise=0
