@@ -96,8 +96,8 @@ steps = [8425, 10110]
 M_images = [s * 304 / 1_000_000 for s in steps]
 clip = [0.15790054202079773, 0.16030366718769073]
 fid = [97.1283841862379, 85.26515191821738]
-clip_series.update({"BS=304, bf16, lr=7.6e-5": (np.array(M_images), np.array(clip))})
-fid_series.update({"BS=304, bf16, lr=7.6e-5": (np.array(M_images), np.array(fid))})
+clip_series.update({"BS=304, bf16, lr=7.6e-5 (i=1)": (np.array(M_images), np.array(clip))})
+fid_series.update({"BS=304, bf16, lr=7.6e-5 (i=1)": (np.array(M_images), np.array(fid))})
 
 """
 16-Sep-2025
@@ -113,6 +113,16 @@ tinyamd2:
 /home/hooved/stable_diffusion/checkpoints/training_checkpoints/09162050
 manually stopped after backup_5055.safetensors due to power downtime
 """
+
+# 17-Sep-2025
+# BS=304, bf16, fp32 softmax, lr=7.6e-5, recent rebase
+# /home/hooved/stable_diffusion/checkpoints/training_checkpoints/09172111
+steps = [8425, 10110]
+M_images = [s * 304 / 1_000_000 for s in steps]
+clip = [0.17256876826286316, 0.17909857630729675]
+fid = [79.61212198096996, 77.126169084374]
+clip_series.update({"BS=304, bf16, lr=7.6e-5 (i=2)": (np.array(M_images), np.array(clip))})
+fid_series.update({"BS=304, bf16, lr=7.6e-5 (i=2)": (np.array(M_images), np.array(fid))})
 
 
 ### graphing
@@ -136,7 +146,8 @@ custom_colors = {
     "BS=304, bf16, lr=3.8e-5": "crimson",
     "BS=304, bf16, lr=1.9e-5": "#ebc934",
     "BS=304, bf16, lr=5.7e-5": "#2bcfab",
-    "BS=304, bf16, lr=7.6e-5": "#9e34eb",
+    "BS=304, bf16, lr=7.6e-5 (i=1)": "#9e34eb",
+    "BS=304, bf16, lr=7.6e-5 (i=2)": "#eb34b4",
 }
 #color_map = {lab: palette[i % len(palette)] for i, lab in enumerate(all_labels)}
 color_map = {lab: custom_colors.get(lab, palette[i % len(palette)]) for i, lab in enumerate(all_labels)}
@@ -144,7 +155,8 @@ custom_markers = {
     "BS=304, bf16, lr=3.8e-5": "^",
     "BS=304, bf16, lr=1.9e-5": "^",
     "BS=304, bf16, lr=5.7e-5": "^",
-    "BS=304, bf16, lr=7.6e-5": "^",
+    "BS=304, bf16, lr=7.6e-5 (i=1)": "*",
+    "BS=304, bf16, lr=7.6e-5 (i=2)": "*",
 }
 
 fig, axes = plt.subplots(2, 1, figsize=(6, 8), sharex=True)
