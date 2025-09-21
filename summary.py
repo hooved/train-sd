@@ -90,7 +90,7 @@ fid = [101.22468192693611, 93.23531995164893]
 clip_series.update({"BS=304, bf16, lr=5.7e-5": (np.array(M_images), np.array(clip))})
 fid_series.update({"BS=304, bf16, lr=5.7e-5": (np.array(M_images), np.array(fid))})
 
-# BS=304, bf16, fp32 softmax, lr=7.6e-5, recent rebase
+# BS=304, bf16, fp32 softmax, lr=7.6e-5, recent rebase (i=1)
 # /home/hooved/stable_diffusion/checkpoints/training_checkpoints/09160330
 steps = [8425, 10110]
 M_images = [s * 304 / 1_000_000 for s in steps]
@@ -115,14 +115,28 @@ manually stopped after backup_5055.safetensors due to power downtime
 """
 
 # 17-Sep-2025
-# BS=304, bf16, fp32 softmax, lr=7.6e-5, recent rebase
+# BS=304, bf16, fp32 softmax, lr=7.6e-5, recent rebase (i=2)
 # /home/hooved/stable_diffusion/checkpoints/training_checkpoints/09172111
+# https://wandb.ai/hooved-hooved/MLPerf-Stable-Diffusion/runs/n7de3jat
 steps = [8425, 10110]
 M_images = [s * 304 / 1_000_000 for s in steps]
 clip = [0.17256876826286316, 0.17909857630729675]
 fid = [79.61212198096996, 77.126169084374]
 clip_series.update({"BS=304, bf16, lr=7.6e-5 (i=2)": (np.array(M_images), np.array(clip))})
 fid_series.update({"BS=304, bf16, lr=7.6e-5 (i=2)": (np.array(M_images), np.array(fid))})
+
+# 20-Sep-2025
+# testing repro script
+# BS=304, bf16, fp32 softmax, lr=7.6e-5, recent rebase (i=3)
+# /home/hooved/stable_diffusion/training_checkpoints/09200156
+# training: https://wandb.ai/hooved-hooved/MLPerf-Stable-Diffusion/runs/cqvzj6ec
+# eval: https://wandb.ai/hooved-hooved/MLPerf-Stable-Diffusion/runs/rhk9ezd6
+steps = [1685, 3370, 5055, 6740, 8425, 10110, 11795]
+M_images = [s * 304 / 1_000_000 for s in steps]
+clip = [0.10095900297164917, 0.13306625187397003, 0.15718211233615875, 0.14855308830738068, 0.16499902307987213, 0.1625542938709259, 0.17338916659355164]
+fid = [173.85286388860686, 115.37836296475393, 100.29796432756717, 103.16187214050723, 83.73339300729134, 90.18630028080332, 78.40699370581245]
+clip_series.update({"BS=304, bf16, lr=7.6e-5 (i=3)": (np.array(M_images), np.array(clip))})
+fid_series.update({"BS=304, bf16, lr=7.6e-5 (i=3)": (np.array(M_images), np.array(fid))})
 
 
 ### graphing
@@ -148,6 +162,7 @@ custom_colors = {
     "BS=304, bf16, lr=5.7e-5": "#2bcfab",
     "BS=304, bf16, lr=7.6e-5 (i=1)": "#9e34eb",
     "BS=304, bf16, lr=7.6e-5 (i=2)": "#eb34b4",
+    "BS=304, bf16, lr=7.6e-5 (i=3)": "#eb8034",
 }
 #color_map = {lab: palette[i % len(palette)] for i, lab in enumerate(all_labels)}
 color_map = {lab: custom_colors.get(lab, palette[i % len(palette)]) for i, lab in enumerate(all_labels)}
@@ -157,6 +172,7 @@ custom_markers = {
     "BS=304, bf16, lr=5.7e-5": "^",
     "BS=304, bf16, lr=7.6e-5 (i=1)": "*",
     "BS=304, bf16, lr=7.6e-5 (i=2)": "*",
+    "BS=304, bf16, lr=7.6e-5 (i=3)": "*",
 }
 
 fig, axes = plt.subplots(2, 1, figsize=(6, 8), sharex=True)
